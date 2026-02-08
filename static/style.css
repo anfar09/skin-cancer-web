@@ -1,3 +1,18 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -297,12 +312,14 @@ html, body {
 /* Container สำหรับรูปและผลลัพธ์ */
 .content-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 100%;
     margin: 20px auto 0 auto; /* เพิ่มระยะห่างด้านบน */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box; /* เพิ่ม */
+    overflow-x: hidden; /* เพิ่ม */
 }
 
 /* กลุ่มปุ่ม */
@@ -311,6 +328,8 @@ html, body {
     gap: 15px;
     justify-content: center;
     align-items: center;
+    max-width: 100%; /* เพิ่ม */
+    flex-wrap: wrap; /* เพิ่ม - ให้ขึ้นบรรทัดใหม่ถ้าจำเป็น */
 }
 
 /* ปุ่มเมื่ออยู่ใน content-container (หลังอัพโหลด) */
@@ -672,8 +691,10 @@ html, body {
     }
     
     .scan-card {
-        width: 95%;
+        width: 95%; /* ลดจาก 95% */
+        max-width: calc(100vw - 30px); /* เพิ่ม - ป้องกันเกินจอ */
         padding: 30px 15px 20px;
+        box-sizing: border-box; /* เพิ่ม */
     }
     
     .upload-btn {
@@ -754,8 +775,10 @@ html, body {
     }
     
     .scan-card {
-        width: 98%;
+        width: 95%; /* ลดจาก 98% */
+        max-width: calc(100vw - 20px); /* เพิ่ม */
         padding: 25px 12px 18px;
+        margin: 0 10px; /* เพิ่ม margin ข้าง */
     }
     
     .upload-btn {
