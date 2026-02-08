@@ -3,6 +3,7 @@ import os
 import json
 import base64
 from datetime import datetime
+import pytz
 
 app = Flask(__name__)
 
@@ -24,11 +25,16 @@ def about():
 
 @app.route("/history")
 def history():
-    try:
-        with open(HISTORY_FILE, "r") as f:
-            history_data = json.load(f)
-    except:
+    if not os.path.exists(HISTORY_FILE):
         history_data = []
+    else:
+        try:
+            with open(HISTORY_FILE, "r") as f:
+                history_data = json.load(f)
+                if not isinstance(history_data, list):
+                    history_data = []
+        except:
+            history_data = []
 
     return render_template("history.html", history=history_data)
 
@@ -39,18 +45,18 @@ def save_history(is_cancer, confidence, image_filename):
     except:
         history = []
 
-    now = datetime.now()
+    thai_tz = pytz.timezone("Asia/Bangkok")
+    now = datetime.now(thai_tz)
 
     new_entry = {
-        "is_cancer": is_cancer,   # ✅ FIX: จาก result → is_cancer
+        "is_cancer": is_cancer,
         "result": "Cancer Detected" if is_cancer else "No Cancer Detected",
         "confidence": confidence,
         "date": now.strftime("%Y-%m-%d"),
         "time": now.strftime("%H:%M:%S"),
-        "image": image_filename   # ✅ ใช้ "image" ให้ตรงกับ history.html
+        "image": image_filename
     }
 
-    # ใส่ล่าสุดไว้บนสุด + เก็บแค่ 3 รายการ
     history.insert(0, new_entry)
     history = history[:3]
 
