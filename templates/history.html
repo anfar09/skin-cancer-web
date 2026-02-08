@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="background history-bg"></div>
+
+<div class="history-page">
+<div class="history-container">
+    <h1 class="history-title">History</h1>
+
+    <div class="card-grid">
+
+    {% for item in history %}
+        <div class="history-card">
+
+            <div class="card-image">
+                <img 
+                    src="{{ url_for('static', filename='uploads/' + (item.image if item.image is defined else item.image_name)) }}"
+                    alt="Uploaded Image"
+                    class="history-img">
+            </div>
+
+            <div class="card-content">
+                <h3>
+                    Result :
+                    {% if item.is_cancer %}
+                        Cancer Detected
+                    {% else %}
+                        No Cancer Detected
+                    {% endif %}
+                </h3>
+                <p>Date : {{ item.date }}</p>
+                <p>Time : {{ item.time }}</p>
+                <p>Confidence : {{ item.confidence }}%</p>
+            </div>
+
+        </div>
+    {% endfor %}
+
+    </div>
+</div>
+</div>
+{% endblock %}

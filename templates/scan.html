@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="background scan-bg"></div>
+<div class="scan-page">
+    <div class="scan-container">
+
+        <div class="scan-card">
+
+            <h1>Upload Image</h1>
+            <p class="wait-text">wait for images...</p>
+
+            <div class="button-group">
+                <button class="upload-btn" id="uploadBtn" type="button">
+                    Upload
+                </button>
+                <button class="reset-btn" id="resetBtn" type="button" style="display:none;">
+                    Reset
+                </button>
+            </div>
+
+            <div class="content-container" id="contentContainer">
+                <div class="hand-image" id="imagePreviewBox" style="display:none;">
+                    <img id="previewImage" class="preview-img" src="" style="display:none;">
+                </div>
+
+                <div class="result-box" id="resultBox" style="display:none;">
+                    <div class="result-content">
+                        <div class="result-icon" id="resultIcon"></div>
+                        <h2 id="resultTitle">Analyzing...</h2>
+                        <p id="resultDescription"></p>
+                        <div class="confidence-bar" id="confidenceBar" style="display:none;">
+                            <div class="confidence-label">
+                                <span>Confidence</span>
+                                <span id="confidenceValue">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+        </div>
+    </div>
+</div>
+
+<script>
+let uploadedFile = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadBtn = document.getElementById("uploadBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const fileInput = document.getElementById("fileInput");
+    const contentContainer = document.getElementById("contentContainer");
+    const buttonGroup = document.querySelector(".button-group");
+    const waitText = document.querySelector(".wait-text");
+
+    uploadBtn.addEventListener('click', handleButtonClick);
+    resetBtn.addEventListener('click', resetUpload);
+
+    fileInput.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        uploadedFile = file;
+        const img = document.getElementById("previewImage");
+        const handBox = document.getElementById("imagePreviewBox");
+
+        img.src = URL.createObjectURL(file);
+        img.style.display = "block";
+        handBox.style.display = "flex";
+
+        waitText.style.display = "none";
+        contentContainer.appendChild(buttonGroup);
+
+        uploadBtn.textContent = "READY";
+        uploadBtn.style.background = "#2ecc71";
+        uploadBtn.style.borderColor = "#a3ffbf";
+
+        resetBtn.style.display = "inline-block";
+
+        document.getElementById("resultBox").style.display = "none";
+    });
+});
+
+function handleButtonClick(event) {
+    event.preventDefault();
+    const btn = document.getElementById("uploadBtn");
+    const btnText = btn.textContent.trim();
+
+    if (btnText === "Upload") {
+        document.getElementById("fileInput").click();
+    } 
+    else if (btnText === "READY") {
+        analyzeImage();
+    } 
+    else if (btnText === "Upload New Image") {
+        resetUpload();
+        setTimeout(() => {
+            document.getElementById("fileInput").click();
+        }, 100);
+    }
+}
+
+async function analyzeImage() {
+    if (!uploadedFile) return;
+
+    const btn = document.getElementById("uploadBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const resultBox = document.getElementById("resultBox");
+    const resultTitle = document.getElementById("resultTitle");
+    const resultDesc = document.getElementById("resultDescription");
+    const resultIcon = document.getElementById("resultIcon");
+    const confidenceBar = document.getElementById("confidenceBar");
+    const imageBox = document.getElementById("imagePreviewBox");
+
+    imageBox.style.display = "none";
+    resetBtn.style.display = "none";
+
+    btn.disabled = true;
+    btn.textContent = "Analyzing...";
+
+    resultBox.style.display = "block";
+    resultTitle.textContent = "Analyzing...";
+    resultDesc.textContent = "Please wait while we process your image";
+    resultIcon.innerHTML = '<div class="spinner"></div>';
+    confidenceBar.style.display = "none";
+
+    const formData = new FormData();
+    formData.append("file", uploadedFile);
+
+    const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await response.json();
+
+    const isCancer = data.is_cancer;
+    const confidence = Math.round(data.confidence);
+
+    showResult(isCancer, confidence);
+
+    btn.disabled = false;
+    btn.textContent = "Upload New Image";
+
+    console.log("Saving image:", uploadedFile.name);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(uploadedFile);
+
+    reader.onload = async function () {
+    const base64Image = reader.result.split(",")[1]; // ตัด header ออก
+
+    await fetch("http://127.0.0.1:5000/save_result", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                is_cancer: isCancer,
+                confidence: confidence,
+                image: base64Image
+            })
+        });
+    };
+
+}
+
+function showResult(isCancer, confidence) {
+    const resultTitle = document.getElementById("resultTitle");
+    const resultDesc = document.getElementById("resultDescription");
+    const resultIcon = document.getElementById("resultIcon");
+    const confidenceBar = document.getElementById("confidenceBar");
+    const confidenceValue = document.getElementById("confidenceValue");
+    const progressFill = document.getElementById("progressFill");
+    const resultBox = document.getElementById("resultBox");
+
+    if (isCancer) {
+        resultTitle.textContent = "Cancer Detected";
+        resultTitle.style.color = "#e74c3c";
+        resultDesc.textContent =
+            "Our AI has detected signs of skin cancer. Please consult a dermatologist immediately.";
+
+        resultIcon.innerHTML = `
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        `;
+        resultBox.classList.add('result-cancer');
+        resultBox.classList.remove('result-safe');
+    } 
+    else {
+        resultTitle.textContent = "No Cancer Detected";
+        resultTitle.style.color = "#27ae60";
+        resultDesc.textContent =
+            "Good news! No signs of skin cancer were detected. Continue regular skin checks.";
+
+        resultIcon.innerHTML = `
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9 12l2 2 4-4"/>
+            </svg>
+        `;
+        resultBox.classList.add('result-safe');
+        resultBox.classList.remove('result-cancer');
+    }
+
+    confidenceBar.style.display = "block";
+    confidenceValue.textContent = confidence + "%";
+    progressFill.style.width = confidence + "%";
+    progressFill.style.background = isCancer ? "#e74c3c" : "#27ae60";
+}
+
+function resetUpload() {
+    uploadedFile = null;
+
+    const previewImg = document.getElementById("previewImage");
+    const imageBox = document.getElementById("imagePreviewBox");
+    const resultBox = document.getElementById("resultBox");
+    const btn = document.getElementById("uploadBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const buttonGroup = document.querySelector(".button-group");
+    const waitText = document.querySelector(".wait-text");
+
+    previewImg.style.display = "none";
+    imageBox.style.display = "none";
+    resultBox.style.display = "none";
+    previewImg.src = "";
+
+    waitText.style.display = "block";
+    waitText.insertAdjacentElement('afterend', buttonGroup);
+
+    btn.textContent = "Upload";
+    btn.style.background = "#7b3fe4";
+    btn.style.borderColor = "#9b6bff";
+    btn.disabled = false;
+
+    resetBtn.style.display = "none";
+    document.getElementById("fileInput").value = "";
+}
+</script>
+{% endblock %}

@@ -1,0 +1,819 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* ไม่ให้เลื่อนซ้าย-ขวา */
+    overflow-y: auto; /* ให้เลื่อนบน-ล่างได้ */
+    font-family: 'Arial', sans-serif;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+/* พื้นหลังหน้า Home (ของเดิม) */
+.home-bg {
+    background-image: url("bg.png");
+    background-size: cover;
+    background-position: center;
+}
+
+/* พื้นหลังหน้า History */
+.history-bg {
+    background-image: url("base.png");
+}
+
+.scan-bg {
+    width: 100%;
+    background-image: url("base.png");
+    background-size: cover;
+    background-position: center;
+}
+
+/* ============================================
+   NAVBAR - เมนูชิดซ้ายติดโลโก้
+   ============================================ */
+.navbar {
+    display: flex;
+    justify-content: flex-start; /* ชิดซ้าย */
+    align-items: center;
+    gap: clamp(40px, 5vw, 80px); /* ระยะห่างระหว่างโลโก้กับเมนู */
+    padding: 20px clamp(20px, 5vw, 60px);
+    background: transparent;
+    color: white;
+}
+
+.logo {
+    font-size: clamp(24px, 3vw, 30px);
+    font-weight: 800;
+}
+
+.menu {
+    display: flex;
+    gap: clamp(20px, 2.5vw, 30px);
+}
+
+.menu a {
+    position: relative;
+    color: white;
+    text-decoration: none;
+    font-size: clamp(16px, 1.5vw, 20px);
+    padding-bottom: 5px;
+}
+
+.menu a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: white;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.menu a:hover::after,
+.menu a.active::after {
+    transform: scaleX(1);
+}
+
+.scan-btn {
+    padding: 8px 20px;
+    background: white;
+    color: black;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: clamp(14px, 1.2vw, 16px);
+    white-space: nowrap;
+    margin-left: auto; /* ผลักไปขวาสุด */
+}
+
+/* ============================================
+   HERO SECTION - หน้า Home (ไม่แก้)
+   ============================================ */
+.hero-section {
+    position: absolute;
+    top: 45%;
+    left: 17%;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+.hero-title {
+    color: white;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.analyze-btn {
+    display: inline-block;
+    padding: clamp(8px, 1.2vh, 10px) clamp(40px, 6vw, 60px);
+    border-radius: 20px;
+    background: #7834ff;
+    color: white;
+    border: 2px solid #9b7cff;
+    box-shadow: 0 0 0 2px #5e17eb;
+    text-decoration: none;
+    font-size: clamp(14px, 1.5vw, 16px);
+    transition: all 0.3s ease;
+}
+
+.analyze-btn:hover {
+    background: #5e17eb;
+    border-color: #b29bff;
+    box-shadow: 0 0 0 4px rgba(178, 155, 255, 0.7);
+}
+
+/* ============================================
+   HISTORY PAGE - กล่องใหญ่ขึ้น
+   ============================================ */
+.history-page {
+    min-height: 100vh; /* เปลี่ยนจาก height เป็น min-height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto; /* ให้เลื่อนได้ */
+    padding: 20px 0; /* เพิ่ม padding บนล่าง */
+}
+
+/* กล่องใสใหญ่ - ขนาดใหญ่ขึ้น */
+.history-container {
+    position: relative;
+    width: 90%;
+    max-width: 1300px;
+    padding: clamp(30px, 4vw, 50px);
+    border-radius: 25px;
+    overflow: visible;
+    margin: 0 auto;
+    min-height: 60vh; /* เปลี่ยนจาก height เป็น min-height */
+    justify-content: center;
+    transform: translateY(clamp(-50px, -4vh, -60px));  
+}
+
+.history-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(120, 52, 255, 0.25);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 2px solid rgba(155, 124, 255, 0.6);
+    box-shadow: 0 0 20px rgba(94, 23, 235, 0.2);
+    border-radius: 25px;
+    z-index: -1;
+}
+
+.history-title {
+    color: white;
+    margin-bottom: 40px;
+    text-align: center;
+    font-size: clamp(30px, 4.5vw, 40px);
+}
+
+.card-image {
+    width: 100%;
+    height: 180px;
+    background: black;
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+}
+
+.history-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Card Grid - 3 กล่องข้างใน */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 3vw, 35px);
+    justify-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* ให้กล่องตัวสุดท้ายที่อยู่คนเดียวในแถวอยู่ตรงกลาง */
+.card-grid > .history-card:nth-child(3n+1):last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+}
+
+.history-card {
+    background: white;
+    width: 100%;
+    max-width: 380px;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.history-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-image {
+    width: 100%;
+    height: clamp(220px, 32vh, 290px);
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-content {
+    padding: 18px 20px 22px;
+}
+
+.card-content h3 {
+    margin: 0 0 10px 0;
+    font-size: clamp(18px, 2vw, 22px);
+}
+
+.card-content p {
+    margin: 5px 0;
+    font-size: clamp(14px, 1.2vw, 16px);
+}
+
+/* ============================================
+   SCAN PAGE
+   ============================================ */
+.scan-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    padding: 60px 20px 40px;
+    text-align: center;
+}
+
+.scan-container h1 {
+    color: white;
+    font-size: clamp(32px, 5vw, 48px);
+    margin: 0 0 clamp(5px, 1vh, 10px) 0; /* ลดระยะห่างด้านล่าง */
+}
+
+/* ===== กล่องสีม่วงใส ===== */
+.scan-card {
+    background: rgba(120, 52, 255, 0.25);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    padding: clamp(30px, 4vw, 40px) clamp(20px, 4vw, 25px) clamp(20px, 4vw, 25px);
+    width: 85%;
+    max-width: 600px;
+
+    border-radius: 26px;
+    text-align: center;
+    border: 2px solid rgba(155, 124, 255, 0.6);
+    box-shadow: 0 0 20px rgba(94, 23, 235, 0.2);
+}
+
+/* คำว่า wait for images... (ชิดกับหัวข้อ) */
+.wait-text {
+    margin-top: 0;
+    margin-bottom: 35px; /* เพิ่มระยะห่างกับปุ่ม */
+    font-size: clamp(14px, 1.2vw, 16px);
+    font-weight: 400;
+    opacity: 0.8;
+    color: #e6ddff;
+}
+
+/* Container สำหรับรูปและผลลัพธ์ */
+.content-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto 0 auto; /* เพิ่มระยะห่างด้านบน */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* กลุ่มปุ่ม */
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ปุ่มเมื่ออยู่ใน content-container (หลังอัพโหลด) */
+.content-container .button-group {
+    margin-top: 30px;
+    margin-bottom: 10px; /* เพิ่มระยะห่างด้านล่างเพื่อให้ชิดขอบ */
+}
+
+.hand-image {
+    width: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.hand-image img {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.upload-btn {
+    background: #7b3fe4;
+    color: white;
+    border: 2px solid #9b6bff;
+    border-radius: 30px;
+    padding: clamp(10px, 1.5vh, 14px) clamp(60px, 10vw, 100px);
+    font-size: clamp(16px, 1.8vw, 18px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-btn:hover {
+    background: #5e17eb;
+    border-color: #b29bff;
+    box-shadow: 0 0 0 4px rgba(178, 155, 255, 0.7);
+}
+
+.upload-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* ปุ่ม Reset สีแดง */
+.reset-btn {
+    background: #e74c3c;
+    color: white;
+    border: 2px solid #ff6b6b;
+    border-radius: 30px;
+    padding: clamp(10px, 1.5vh, 14px) clamp(40px, 8vw, 60px);
+    font-size: clamp(16px, 1.8vw, 18px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reset-btn:hover {
+    background: #c0392b;
+    border-color: #ff8787;
+    box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.3);
+}
+
+.preview-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ===== ผลลัพธ์การตรวจจับ ===== */
+.result-box {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    width: 100%;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    animation: slideIn 0.4s ease-out;
+    display: none; /* ซ่อนตอนเริ่มต้น */
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-box.result-cancer {
+    border: 3px solid #e74c3c;
+}
+
+.result-box.result-safe {
+    border: 3px solid #27ae60;
+}
+
+.result-content {
+    text-align: center;
+}
+
+.result-icon {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-icon svg {
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.result-box h2 {
+    margin: 0 0 15px 0;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+}
+
+.result-box p {
+    color: #555;
+    font-size: clamp(14px, 1.2vw, 16px);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Confidence Bar */
+.confidence-bar {
+    margin-top: 25px;
+}
+
+.confidence-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+    font-size: clamp(14px, 1.2vw, 16px);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #ecf0f1;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+    height: 100%;
+    background: #27ae60;
+    border-radius: 15px;
+    transition: width 1s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Spinner Loading */
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #7b3fe4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}   
+
+/* ============================================
+   ABOUT PAGE - เพิ่มระยะห่างระหว่างกล่อง
+   ============================================ */
+.about-bg {
+    width: 100%;
+    min-height: 100vh; /* เปลี่ยนจาก height เป็น min-height */
+    background-image: url("base.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto; /* ให้เลื่อนได้ */
+}
+
+.about-page {
+    min-height: 90vh; /* เปลี่ยนจาก height เป็น min-height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto; /* ให้เลื่อนได้ */
+    padding: 40px 0; /* เพิ่ม padding */
+}
+
+.about-container {
+    width: 95%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* 2 กล่อง - เพิ่มระยะห่าง */
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(50px, 6vw, 80px);
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+.about-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    padding: clamp(20px, 3vw, 30px);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.about-card h2 {
+    margin-top: 0;
+    font-size: clamp(22px, 2.5vw, 26px);
+}
+
+.about-card ul {
+    padding-left: 20px;
+}
+
+.about-card li {
+    margin-bottom: 8px;
+    font-size: clamp(14px, 1.2vw, 16px);
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .navbar {
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+    
+    .menu {
+        gap: 15px;
+    }
+    
+    /* History - 2 คอลัมน์ */
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* กล่องที่เหลือ 1 อันให้อยู่ตรงกลาง */
+    .card-grid > .history-card:nth-child(2n+1):last-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+    }
+    
+    /* ยกเลิก rule ของ 3 คอลัมน์ */
+    .card-grid > .history-card:nth-child(3n+1):last-child {
+        grid-column: auto;
+        justify-self: center;
+    }
+    
+    /* About - ยังคง 2 คอลัมน์ */
+    .about-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: clamp(30px, 5vw, 50px);
+    }
+    
+    .history-container {
+        transform: translateY(0);
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    html, body {
+        overflow-y: scroll;
+    }
+    
+    .navbar {
+        padding: 15px 20px;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .menu {
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .scan-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+    
+    /* History - 1 คอลัมน์ */
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .history-container {
+        transform: translateY(0);
+        margin: 20px auto;
+        min-height: auto;
+    }
+    
+    .history-page {
+        min-height: auto;
+        padding: 20px 0 40px;
+    }
+    
+    /* About - 1 คอลัมน์ */
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .about-page {
+        min-height: auto;
+        padding: 20px 0 40px;
+    }
+    
+    .hero-section {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+    }
+    
+    /* Scan Page - ปรับให้ responsive */
+    .scan-container {
+        padding: 40px 15px 30px;
+        min-height: auto;
+    }
+    
+    .scan-card {
+        width: 95%;
+        padding: 30px 15px 20px;
+    }
+    
+    .upload-btn {
+        padding: 12px 50px;
+        font-size: 16px;
+    }
+    
+    .reset-btn {
+        padding: 12px 35px;
+        font-size: 16px;
+    }
+    
+    .button-group {
+        gap: 12px;
+    }
+    
+    .wait-text {
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+    
+    .content-container {
+        max-width: 100%;
+        min-height: 180px;
+        margin-top: 30px; /* ลดระยะห่างบน mobile */
+    }
+    
+    .hand-image {
+        max-width: 100%;
+    }
+    
+    .hand-image img {
+        max-height: 300px;
+    }
+    
+    .result-box {
+        padding: 20px;
+    }
+    
+    .result-box h2 {
+        font-size: 22px;
+    }
+    
+    .result-icon svg {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .spinner {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .history-container,
+    .about-container {
+        padding: 15px;
+    }
+    
+    .navbar {
+        gap: 10px;
+    }
+    
+    .menu a {
+        font-size: 14px;
+    }
+    
+    /* Scan Page - Mobile เล็ก */
+    .scan-container {
+        padding-top: 30px;
+    }
+    
+    .scan-container h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+    
+    .scan-card {
+        width: 98%;
+        padding: 25px 12px 18px;
+    }
+    
+    .upload-btn {
+        padding: 10px 40px;
+        font-size: 15px;
+    }
+    
+    .reset-btn {
+        padding: 10px 30px;
+        font-size: 15px;
+    }
+    
+    .button-group {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .wait-text {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+    
+    .content-container {
+        min-height: 150px;
+        margin-top: 25px; /* ลดระยะห่างบน mobile เล็ก */
+    }
+    
+    .hand-image img {
+        max-height: 250px;
+    }
+    
+    .result-box {
+        padding: 15px;
+    }
+    
+    .result-box h2 {
+        font-size: 20px;
+    }
+    
+    .result-box p {
+        font-size: 13px;
+    }
+    
+    .result-icon svg {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .spinner {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .progress-bar {
+        height: 25px;
+    }
+    
+    .confidence-label {
+        font-size: 13px;
+    }
+}

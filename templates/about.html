@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="background about-bg"></div>   <!-- ✅ ใช้โครงเดียวกับหน้าอื่น -->
+
+<div class="about-page">
+    <div class="about-container">
+
+        <div class="about-grid">
+
+            <div class="about-card">
+                <h2>Mechanics</h2>
+                <ul>
+                    <li><b>Smart Image Analysis:</b> The system uses a trained 
+                        "digital eye" to look at photos of skin spots and lesions.</li>
+                    <li><b>Pattern Recognition:</b> It compares your photo against a 
+                        library of thousands of medical images to identify 
+                        specific shapes, colors, and textures.</li>
+                    <li><b>Risk Categorization:</b> It automatically sorts findings into 
+                        two groups: Benign (low risk/harmless) or Malignant 
+                        (high risk/requires medical attention).</li>
+                    <li><b>High-Speed Results:</b> The AI processes the complex 
+                        visual data in seconds to give an instant assessment 
+                        based on its training.</li>
+                </ul>
+            </div>
+
+            <div class="about-card">
+                <h2>Limitations</h2>
+                <ul>
+                    <li><b>Not a Doctor:</b> This tool provides an automated assessment 
+                        and is not a formal medical diagnosis.</li>
+                    <li><b>Image Quality:</b> The accuracy depends heavily on the photo; 
+                        blurry or poorly lit images may lead to incorrect results.</li>
+                    <li><b>Limited Scope:</b> The AI is specifically trained on a set of 
+                        seven common skin conditions and may not recognize 
+                        rarer issues.</li>
+                    <li><b>Data Balance:</b> Because there are naturally more "harmless" 
+                        cases in the world, the AI must use weighted math to 
+                        ensure it doesn't overlook "dangerous" cases.</li>
+                    <li><b>Professional Follow-up:</b> Any "Malignant" result should be 
+                        immediately verified by a dermatologist for a physical 
+                        examination.</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
