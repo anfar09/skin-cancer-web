@@ -156,7 +156,7 @@ async function analyzeImage() {
     reader.onload = async function () {
     const base64Image = reader.result.split(",")[1]; // ตัด header ออก
 
-    await fetch("http://127.0.0.1:5000/save_result", {
+    await fetch("https://skin-cancer-web.onrender.com/save_result", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
